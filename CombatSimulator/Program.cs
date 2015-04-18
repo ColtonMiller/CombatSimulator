@@ -19,7 +19,6 @@ namespace CombatSimulator
         static Random rng2 = new Random();
         //users inital input 
         static string usersInput = string.Empty;
-        static int intUserInput = 0;
         //valid user responce
         static int validUserInput = 0;
         static void Main(string[] args)
@@ -29,6 +28,9 @@ namespace CombatSimulator
            //loops through game until playing equals false
             while (playing == true)
             {
+                //check if user or dragon is dead
+                CheckIfDead();
+                //display info
                 DisplayStats();
                 //makes users input set to console read line
                 usersInput = Console.ReadLine();
@@ -43,6 +45,7 @@ namespace CombatSimulator
                 {
                     Heal();
                 }
+                EnemyAttack();
                 //clear screen  to make it look static
                 Console.Clear();
 
@@ -68,7 +71,7 @@ namespace CombatSimulator
                  break;
                 
                 default:
-                    Console.WriteLine("Invalid Entry");
+                    Console.WriteLine("Invalid Entry you trip over a rock");
                     System.Threading.Thread.Sleep(1000);
                  break;
 	        }
@@ -128,13 +131,13 @@ namespace CombatSimulator
                     int sword = rng.Next(20, 36);
                     EnemyHealth -= sword;
                     Console.WriteLine("Your sword hit and hit the dragon for " + sword);
-                    System.Threading.Thread.Sleep(4000);
+                    System.Threading.Thread.Sleep(2000);
                 }
                 else if (swordChance >= 8)
                 {
                     //didn't hit
                     Console.WriteLine("Your swing of the sword missed and didn't hurt the dragon");
-                    System.Threading.Thread.Sleep(4000);
+                    System.Threading.Thread.Sleep(2000);
                 }
                 //dragons turn to attack
             }
@@ -145,7 +148,7 @@ namespace CombatSimulator
                 int fireball = rng.Next(10, 16);
                 EnemyHealth -= fireball;
                 Console.WriteLine("You hit the dragon for " + fireball);
-                System.Threading.Thread.Sleep(4000);
+                System.Threading.Thread.Sleep(2000);
             }
         }
         /// <summary>
@@ -162,7 +165,52 @@ namespace CombatSimulator
                 UserHealth = 100;
             }
             Console.WriteLine("You heal for " + heal);
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(2000);
+        }
+        /// <summary>
+        /// calculates enemy's attack 
+        /// </summary>
+        public static void EnemyAttack()
+        {
+            //set random number for chance
+            int hitchance = rng2.Next(1, 11);
+            //check if enemy hits or not
+            if (hitchance < 9)
+            {
+                //enemy hit
+                //make random for hit between 5-15 take out of userhealth
+                int hit = rng2.Next(5, 16);
+                UserHealth -= hit;
+                Console.WriteLine("Dragon breathes fires and hits you for " + hit);
+                System.Threading.Thread.Sleep(2000);
+            }
+            else
+            {
+                //enemy did not hit
+                Console.WriteLine("You dodge the dragon's attack");
+                System.Threading.Thread.Sleep(2000);
+            }
+        }
+        public static void CheckIfDead()
+        {
+            //checks if user is dead
+            if (UserHealth <= 0)
+            {
+                Console.Clear();
+                Console.WriteLine("You died to a horribly improbably dragon well done!");
+                Console.WriteLine("press any key to end the game and continue lossing...");
+                Console.ReadKey();
+                playing = false;
+            }
+            //checks if dragon is dead
+            else if (EnemyHealth <= 0)
+            {
+                Console.Clear();
+                Console.WriteLine("Congradulations you have slain a dragon that probably would have killed itself   either way");
+                Console.WriteLine("press any key to end the game...");
+                Console.ReadKey();
+                playing = false;
+            }
         }
     }
 }
